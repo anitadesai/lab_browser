@@ -16,8 +16,9 @@ public class Main extends Application {
     @Override
     public void start (Stage stage) {
         // create program specific components
-        BrowserModel model = new BrowserModel();
-        BrowserView display = new BrowserView(model, "English");
+    	String language = "English";
+        BrowserModel model = new BrowserModel(language);
+        BrowserView display = new BrowserView(model, language);
         // give the window a title
         stage.setTitle(TITLE);
         // add our user interface components to Frame and show it

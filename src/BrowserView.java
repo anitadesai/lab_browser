@@ -61,6 +61,8 @@ public class BrowserView {
     private Button myBackButton;
     private Button myNextButton;
     private Button myHomeButton;
+    private Button myFaveButton;
+  
     // favorites
     private ComboBox<String> myFavorites;
     // get strings from resource file
@@ -84,7 +86,7 @@ public class BrowserView {
         enableButtons();
         // create scene to hold UI
         myScene = new Scene(root, DEFAULT_SIZE.width, DEFAULT_SIZE.height);
-        //myScene.getStylesheets().add(DEFAULT_RESOURCE_PACKAGE + STYLESHEET);
+        myScene.getStylesheets().add(DEFAULT_RESOURCE_PACKAGE + STYLESHEET);
     }
 
     /**
@@ -96,7 +98,7 @@ public class BrowserView {
             update(valid);
         }
         else {
-            showError("Could not load " + url);
+            showError(String.format(myResources.getString("ErrorOnGo"), url));
         }
     }
 
@@ -143,7 +145,7 @@ public class BrowserView {
     private void showFavorite (String favorite) {
         showPage(myModel.getFavorite(favorite).toString());
         // reset favorites ComboBox so the same choice can be made again
-        myFavorites.setValue(null);
+        //myFavorites.setValue(null);
     }
 
     // update just the view to display given URL
@@ -213,6 +215,8 @@ public class BrowserView {
         result.getChildren().add(myNextButton);
         myHomeButton = makeButton("HomeCommand", event -> home());
         result.getChildren().add(myHomeButton);
+        myFaveButton = makeButton("AddFavorites", event -> addFavorite());
+        result.getChildren().add(myFaveButton);
         // if user presses button or enter in text field, load/show the URL
         EventHandler<ActionEvent> showHandler = new ShowPage();
         result.getChildren().add(makeButton("GoCommand", showHandler));
@@ -225,11 +229,18 @@ public class BrowserView {
     private Node makePreferencesPanel () {
         HBox result = new HBox();
         myFavorites = new ComboBox<String>();
+        myFavorites.valueProperty().addListener(new ChangeListener<String>() {
+            @Override 
+            public void changed(ObservableValue ov, String t, String t1) {                
+                    showFavorite(t1);
+            }    
+        });
         // ADD REST OF CODE HERE
         result.getChildren().add(makeButton("SetHomeCommand", event -> {
             myModel.setHome();
             enableButtons();
         }));
+        result.getChildren().add(myFavorites);
         return result;
     }
 
